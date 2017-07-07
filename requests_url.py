@@ -71,13 +71,13 @@ def read(filename):
 if __name__ == '__main__':
     #漫画所有地址
     urls_comic =[]
-    #单集所有地址
-    urls_total = []
-    #图片地址
-    urls_img = []
-
     urls_comic = read('./comic_urls.txt')
     for url in urls_comic:
+        # 单集所有地址
+        urls_total = []
+        # 图片地址
+        urls_img = []
+
         # 建立单集文件夹
         dp = url
         pp = (urls_comic.index(dp)) #int
@@ -95,6 +95,7 @@ if __name__ == '__main__':
         #链接重新组合好插入变量已输出每一集的所有页面链接
         urls = url
         print("共 %s 页" % x)
+
         for i in range(1,x+1):
             u = re.sub(r'1.htm', '', urls) + str(i) + '.htm'
             #print u
@@ -102,6 +103,7 @@ if __name__ == '__main__':
             time.sleep(0.2)
             urls_total.append(u)
         #print urls_total[31]
+
         #解析当前集数的所有网页，提取漫画下载地址
         pa = 0
         for f in range(0,x):
@@ -114,11 +116,14 @@ if __name__ == '__main__':
             urls_img.append(h)
             print("已解析第 %s 页" % pa)
 
+        # 下载地址去重，且按照索引再次排序
+        urls_s = list(set(urls_img))
+        urls_s.sort(key=urls_img.index)
 
         #下载
         #dir = ('./image/')
         index2 = 0
-        for l in urls_img:
+        for l in urls_s:
             if down_img(l, dir_path, str(index2)):
                 index2 += 1
                 time.sleep(0.2)
