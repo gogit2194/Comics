@@ -41,7 +41,7 @@ def img_url(ss):
 def down_img(img_url,dir_path,img_name):
     filename = os.path.join(dir_path,img_name)
     try:
-        res = requests.get(img_url,timeout=60)
+        res = requests.get(img_url,timeout=120)
         if str(res.status_code)[0] == '4':
             print(str(res.status_code),":",img_url)
             return False
@@ -123,3 +123,4 @@ if __name__ == '__main__':
                 index2 += 1
                 time.sleep(0.2)
                 print("已下载第 %s 张" % index2)
+        time.sleep(25)
