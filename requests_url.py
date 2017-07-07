@@ -58,43 +58,68 @@ def mkdir(dir_name):
     if not os.path.exists(dir_path):
         os.mkdir(dir_path)
     return dir_path
-if __name__ == '__main__':
-    urls_comic =[]
-    urls_total = []
-    urls_img = []
-    url = "http://comic2.kukudm.com/comiclist/1953/38891/1.htm"
-    ss = html_resolve(url)
-    pages = pages_n(ss)
-    x = int (pages)
-    #链接重新组合好插入变量已输出每一集的所有页面链接
-    urls = url
-    print("共 %s 页" % x)
-    for i in range(1,x+1):
-        u = re.sub(r'1.htm', '', urls) + str(i) + '.htm'
-        #print u
-        #return u
-        time.sleep(0.2)
-        urls_total.append(u)
-    #print urls_total[31]
-    #解析当前集数的所有网页提取下载地址
-    pa = 0
-    for f in range(0,x):
-        pa += 1
-        d = urls_total[f]
-        time.sleep(0.2)
-        img = html_resolve(d)
-        g = img_url(img)
-        h = "http://n.1whour.com/" + g
-        urls_img.append(h)
-        print("已解析第 %s 页" % pa)
-    #建立单集文件夹
 
-    #下载
-    dir = './image/'
-    dir_path = mkdir(dir)
-    index = 0
-    for l in urls_img:
-        if down_img(l, dir_path, str(index)):
-            index += 1
+def read(filename):
+    d = []
+    with open(filename, 'r') as input:
+        for line in input.readlines():
+            line = line.strip('\n')
+            d.append(line)
+    return d
+
+
+if __name__ == '__main__':
+    #漫画所有地址
+    urls_comic =[]
+    #单集所有地址
+    urls_total = []
+    #图片地址
+    urls_img = []
+
+    urls_comic = read('./comic_urls.txt')
+    for url in urls_comic:
+        # 建立单集文件夹
+        dp = url
+        pp = (urls_comic.index(dp)) #int
+        ppp = str(pp+1)
+        print ('当前读取第',pp+1,'集地址')
+        print ('网址：',url)
+        mkdir(ppp)
+        dir_path = mkdir(ppp)
+        print ('已建立',pp+1,'集的文件夹')
+
+        #url = "http://comic2.kukudm.com/comiclist/1953/38891/1.htm"
+        ss = html_resolve(url)
+        pages = pages_n(ss)
+        x = int (pages)
+        #链接重新组合好插入变量已输出每一集的所有页面链接
+        urls = url
+        print("共 %s 页" % x)
+        for i in range(1,x+1):
+            u = re.sub(r'1.htm', '', urls) + str(i) + '.htm'
+            #print u
+            #return u
             time.sleep(0.2)
-            print("已下载第 %s 张" % index)
+            urls_total.append(u)
+        #print urls_total[31]
+        #解析当前集数的所有网页，提取漫画下载地址
+        pa = 0
+        for f in range(0,x):
+            pa += 1
+            d = urls_total[f]
+            time.sleep(0.2)
+            img = html_resolve(d)
+            g = img_url(img)
+            h = "http://n.1whour.com/" + g
+            urls_img.append(h)
+            print("已解析第 %s 页" % pa)
+
+
+        #下载
+        #dir = ('./image/')
+        index2 = 0
+        for l in urls_img:
+            if down_img(l, dir_path, str(index2)):
+                index2 += 1
+                time.sleep(0.2)
+                print("已下载第 %s 张" % index2)
